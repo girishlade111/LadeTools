@@ -1,39 +1,92 @@
-// Barrel export file for tool components
+import {
+  Braces,
+  Binary,
+  KeyRound,
+  FileCode2,
+  Hash,
+  type LucideIcon,
+} from "lucide-react";
+import { JsonFormatterTool } from "./json-formatter";
+import { Base64Tool } from "./base64-tool";
+import { JwtDecoderTool } from "./jwt-decoder";
+import { RegexTesterTool } from "./regex-tester";
+import { UuidGeneratorTool } from "./uuid-generator";
+
 export interface ToolMeta {
-  id: string;
+  id: ToolId;
   name: string;
+  shortName: string;
   description: string;
-  category: "formatters" | "converters" | "generators" | "crypto" | "utilities";
-  icon: string;
+  category: "formatters" | "converters" | "crypto" | "utilities" | "generators";
+  icon: LucideIcon;
+  badge?: string;
+  component: React.ComponentType;
 }
+
+export type ToolId =
+  | "json-formatter"
+  | "base64"
+  | "jwt-decoder"
+  | "regex-tester"
+  | "uuid-timestamp";
 
 export const TOOLS_REGISTRY: ToolMeta[] = [
   {
     id: "json-formatter",
-    name: "JSON Formatter & Validator",
-    description: "Format, validate, minfy, and inspect JSON payloads offline.",
+    name: "JSON Formatter",
+    shortName: "JSON",
+    description: "Format, validate, prettify, and minify JSON data",
     category: "formatters",
-    icon: "Braces",
+    icon: Braces,
+    badge: "Formatter",
+    component: JsonFormatterTool,
   },
   {
     id: "base64",
-    name: "Base64 Encoder / Decoder",
-    description: "Encode and decode text, files, and URIs seamlessly.",
+    name: "Base64 Tool",
+    shortName: "Base64",
+    description: "Encode and decode text and string payloads",
     category: "converters",
-    icon: "Binary",
+    icon: Binary,
+    badge: "Converter",
+    component: Base64Tool,
   },
   {
-    id: "jwt-debugger",
-    name: "JWT Token Debugger",
-    description: "Inspect decoded headers, claims, expiration, and payload tokens.",
+    id: "jwt-decoder",
+    name: "JWT Decoder",
+    shortName: "JWT",
+    description: "Decode and inspect JSON Web Tokens and claims",
     category: "crypto",
-    icon: "KeyRound",
+    icon: KeyRound,
+    badge: "Crypto",
+    component: JwtDecoderTool,
   },
   {
-    id: "hash-generator",
-    name: "Hash & UUID Generator",
-    description: "Generate MD5, SHA-256, SHA-512, and UUID v4 identifiers locally.",
+    id: "regex-tester",
+    name: "Regex Tester",
+    shortName: "Regex",
+    description: "Evaluate and test regular expressions in real-time",
+    category: "utilities",
+    icon: FileCode2,
+    badge: "Utility",
+    component: RegexTesterTool,
+  },
+  {
+    id: "uuid-timestamp",
+    name: "UUID / Timestamp",
+    shortName: "UUID / Time",
+    description: "Generate UUIDs v4 and convert Unix Epoch timestamps",
     category: "generators",
-    icon: "Hash",
+    icon: Hash,
+    badge: "Generator",
+    component: UuidGeneratorTool,
   },
 ];
+
+export {
+  JsonFormatterTool,
+  Base64Tool,
+  JwtDecoderTool,
+  RegexTesterTool,
+  UuidGeneratorTool,
+};
