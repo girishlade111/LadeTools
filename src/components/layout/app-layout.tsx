@@ -6,6 +6,8 @@ import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 import { Toaster } from "@/components/ui/toaster";
 import { TOOLS_REGISTRY, type ToolId } from "@/components/tools";
 
+import { SupportFooter } from "@/components/support-footer";
+
 interface AppLayoutProps {
   activeToolId: ToolId;
   onSelectTool: (id: ToolId) => void;
@@ -42,8 +44,9 @@ export function AppLayout({ activeToolId, onSelectTool, dbStatus }: AppLayoutPro
           onOpenMobileNav={() => setMobileNavOpen(true)}
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto animate-in fade-in duration-200">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto animate-in fade-in duration-200 flex flex-col justify-between">
           <ActiveComponent />
+          <SupportFooter />
         </main>
       </div>
 
