@@ -174,9 +174,15 @@ export function JwtDecoderTool() {
 
         {/* Global Toolbar Actions */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          {/* Privacy Note Badge */}
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-400 font-medium">
+            <Lock className="h-3 w-3 shrink-0" />
+            <span>History is stored locally on your device only, never sent anywhere</span>
+          </div>
+
           <HistoryDrawer
             title="JWT History"
-            description="Recent inspected and decoded JSON Web Tokens"
+            description="Recent inspected and decoded JSON Web Tokens. Stored locally on your device only, never sent anywhere."
             items={drawerItems}
             onSelect={handleSelectHistory}
             onDelete={(id) => deleteHistoryItem("jwtHistory", id)}
@@ -219,6 +225,12 @@ export function JwtDecoderTool() {
             Clear
           </Button>
         </div>
+      </div>
+
+      {/* Mobile Privacy Notice */}
+      <div className="flex sm:hidden items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-400 font-medium">
+        <Lock className="h-3 w-3 shrink-0" />
+        <span>History is stored locally on your device only, never sent anywhere</span>
       </div>
 
       {/* Raw JWT Input Section */}
