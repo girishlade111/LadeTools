@@ -66,7 +66,7 @@ export function JsonFormatterTool() {
   const [collapseAllTrigger, setCollapseAllTrigger] = useState(0);
 
   const history = useJsonHistory();
-  const lastSavedInput = useRef<string>("");
+  const lastSavedInput = useRef<string>(SAMPLE_NESTED_JSON.trim());
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounced real-time validation (~300ms)
