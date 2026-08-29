@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import { useJwtHistory, addJwtHistory } from "@/db";
 import { KeyRound, ShieldAlert, History, Key } from "lucide-react";
 
@@ -53,7 +54,7 @@ export function JwtDecoderTool() {
           <Button variant="outline" size="sm" onClick={() => setToken("")} disabled={!token}>
             Clear
           </Button>
-          <Button variant="default" size="sm" className="gap-1.5" onClick={handleDecode}>
+          <Button variant="default" size="sm" className="gap-1.5" onClick={handleDecode} disabled={!token}>
             <Key className="h-3.5 w-3.5" />
             Decode JWT
           </Button>
@@ -62,7 +63,10 @@ export function JwtDecoderTool() {
 
       {/* Token Input */}
       <div className="space-y-2">
-        <label className="text-xs text-muted-foreground font-medium">Encoded JWT String</label>
+        <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
+          <span>Encoded JWT String</span>
+          <CopyButton text={token} label="Copy Token" size="sm" className="h-6 px-2 text-[11px]" />
+        </div>
         <textarea
           value={token}
           onChange={(e) => setToken(e.target.value)}
@@ -81,7 +85,10 @@ export function JwtDecoderTool() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <div className="text-xs font-semibold text-muted-foreground">Header (Algorithm & Token Type)</div>
+            <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+              <span>Header (Algorithm & Type)</span>
+              <CopyButton text={header} label="Copy Header" size="sm" className="h-6 px-2 text-[11px]" />
+            </div>
             <textarea
               readOnly
               value={header}
@@ -90,7 +97,10 @@ export function JwtDecoderTool() {
             />
           </div>
           <div className="space-y-2">
-            <div className="text-xs font-semibold text-muted-foreground">Payload (Claims & Data)</div>
+            <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
+              <span>Payload (Claims & Data)</span>
+              <CopyButton text={payload} label="Copy Payload" size="sm" className="h-6 px-2 text-[11px]" />
+            </div>
             <textarea
               readOnly
               value={payload}
@@ -118,9 +128,12 @@ export function JwtDecoderTool() {
                 className="cursor-pointer p-2 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/70 text-xs font-mono flex justify-between items-center transition-colors"
               >
                 <span className="truncate max-w-lg text-foreground">{item.token}</span>
-                <span className="text-[10px] text-muted-foreground shrink-0">
-                  {new Date(item.createdAt).toLocaleTimeString()}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <CopyButton text={item.token} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
+                  <span className="text-[10px] text-muted-foreground">
+                    {new Date(item.createdAt).toLocaleTimeString()}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

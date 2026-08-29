@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import { useBase64History, addBase64History } from "@/db";
-import { Binary, Copy, Check, History, RefreshCw } from "lucide-react";
+import { Binary, History, RefreshCw } from "lucide-react";
 
 export function Base64Tool() {
   const [input, setInput] = useState("Hello LadeTools Developer!");
   const [output, setOutput] = useState("");
   const [mode, setMode] = useState<"encode" | "decode">("encode");
-  const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const history = useBase64History();
 
@@ -28,13 +28,6 @@ export function Base64Tool() {
       setError((err as Error).message);
       setOutput("");
     }
-  };
-
-  const handleCopy = () => {
-    if (!output) return;
-    navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -80,7 +73,7 @@ export function Base64Tool() {
               Decode
             </button>
           </div>
-          <Button variant="default" size="sm" className="gap-1.5" onClick={handleProcess}>
+          <Button variant="default" size="sm" className="gap-1.5" onClick={handleProcess} disabled={!input}>
             <RefreshCw className="h-3.5 w-3.5" />
             {mode === "encode" ? "Encode to Base64" : "Decode Base64"}
           </Button>
@@ -92,7 +85,10 @@ export function Base64Tool() {
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
             <span>{mode === "encode" ? "Plain Text Input" : "Base64 Input"}</span>
-            <span className="font-mono text-[11px]">{input.length} chars</span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[11px]">{input.length} chars</span>
+              <CopyButton text={input} label="Copy Input" size="sm" className="h-6 px-2 text-[11px]" />
+            </div>
           </div>
           <textarea
             value={input}
@@ -105,16 +101,7 @@ export function Base64Tool() {
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
             <span>{mode === "encode" ? "Base64 Output" : "Decoded Text"}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 px-2 text-xs gap-1"
-              onClick={handleCopy}
-              disabled={!output}
-            >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-              <span>{copied ? "Copied" : "Copy"}</span>
-            </Button>
+            <CopyButton text={output} label="Copy Output" size="sm" className="h-6 px-2 text-[11px]" />
           </div>
           {error ? (
             <div className="w-full h-80 p-4 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive font-mono text-xs">
@@ -157,9 +144,12 @@ export function Base64Tool() {
                   </span>
                   <span className="truncate max-w-sm text-foreground">{item.input}</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground shrink-0">
-                  {new Date(item.createdAt).toLocaleTimeString()}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <CopyButton text={item.output} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
+                  <span className="text-[10px] text-muted-foreground">
+                    {new Date(item.createdAt).toLocaleTimeString()}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

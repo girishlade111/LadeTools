@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import { useRegexHistory, addRegexHistory } from "@/db";
 import { FileCode2, Play, History, AlertCircle } from "lucide-react";
 
@@ -40,7 +41,7 @@ export function RegexTesterTool() {
           </div>
         </div>
 
-        <Button variant="default" size="sm" className="gap-1.5" onClick={handleTestRegex}>
+        <Button variant="default" size="sm" className="gap-1.5" onClick={handleTestRegex} disabled={!pattern}>
           <Play className="h-3.5 w-3.5" />
           Test Expression
         </Button>
@@ -49,7 +50,10 @@ export function RegexTesterTool() {
       {/* Pattern Input & Flags */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <div className="sm:col-span-3 space-y-1.5">
-          <label className="text-xs text-muted-foreground font-medium">Regular Expression Pattern</label>
+          <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
+            <span>Regular Expression Pattern</span>
+            <CopyButton text={`/${pattern}/${flags}`} label="Copy Regex" size="sm" className="h-6 px-2 text-[11px]" />
+          </div>
           <input
             type="text"
             value={pattern}
@@ -73,7 +77,10 @@ export function RegexTesterTool() {
       {/* Test String & Matches */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-xs text-muted-foreground font-medium">Test String</label>
+          <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
+            <span>Test String</span>
+            <CopyButton text={testString} label="Copy Text" size="sm" className="h-6 px-2 text-[11px]" />
+          </div>
           <textarea
             value={testString}
             onChange={(e) => setTestString(e.target.value)}
@@ -84,8 +91,14 @@ export function RegexTesterTool() {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
-            <span>Match Results</span>
-            <span className="font-mono text-primary font-semibold">{matches.length} matches found</span>
+            <span>Match Results ({matches.length})</span>
+            <CopyButton
+              text={matches.join("\n")}
+              label="Copy Matches"
+              size="sm"
+              className="h-6 px-2 text-[11px]"
+              disabled={matches.length === 0}
+            />
           </div>
           {error ? (
             <div className="w-full h-64 p-4 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive font-mono text-xs flex items-start gap-2">
@@ -104,10 +117,13 @@ export function RegexTesterTool() {
                 matches.map((m, idx) => (
                   <div
                     key={idx}
-                    className="p-2 rounded border border-border/50 bg-background/80 flex items-center justify-between"
+                    className="p-2 rounded-lg border border-border/50 bg-background/80 flex items-center justify-between"
                   >
                     <span className="text-foreground font-semibold">{m}</span>
-                    <span className="text-[10px] text-muted-foreground">Match #{idx + 1}</span>
+                    <div className="flex items-center gap-2">
+                      <CopyButton text={m} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
+                      <span className="text-[10px] text-muted-foreground">#{idx + 1}</span>
+                    </div>
                   </div>
                 ))
               )}
@@ -140,9 +156,12 @@ export function RegexTesterTool() {
                   <span className="text-primary font-semibold">/{item.pattern}/{item.flags}</span>
                   <span className="text-muted-foreground truncate max-w-sm">{item.testString}</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground shrink-0">
-                  {new Date(item.createdAt).toLocaleTimeString()}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <CopyButton text={`/${item.pattern}/${item.flags}`} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
+                  <span className="text-[10px] text-muted-foreground">
+                    {new Date(item.createdAt).toLocaleTimeString()}
+                  </span>
+                </div>
               </div>
             ))}
           </div>

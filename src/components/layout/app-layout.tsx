@@ -3,6 +3,7 @@ import { Sidebar } from "./sidebar";
 import { Header } from "./header";
 import { MobileNav } from "./mobile-nav";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
+import { Toaster } from "@/components/ui/toaster";
 import { TOOLS_REGISTRY, type ToolId } from "@/components/tools";
 
 interface AppLayoutProps {
@@ -48,6 +49,9 @@ export function AppLayout({ activeToolId, onSelectTool, dbStatus }: AppLayoutPro
 
       {/* PWA Install Banner */}
       <PwaInstallPrompt />
+
+      {/* Toast Notifications */}
+      <Toaster />
     </div>
   );
 }

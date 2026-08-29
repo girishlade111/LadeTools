@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/ui/copy-button";
 import { useJsonHistory, addJsonHistory } from "@/db";
-import { Braces, Play, Copy, Check, History, CheckCircle2, AlertCircle } from "lucide-react";
+import { Braces, Play, History, CheckCircle2, AlertCircle } from "lucide-react";
 
 export function JsonFormatterTool() {
   const [input, setInput] = useState(`{\n  "title": "LadeTools",\n  "status": "ready",\n  "offline": true\n}`);
   const [output, setOutput] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
   const history = useJsonHistory();
 
   const handleFormat = async () => {
@@ -36,13 +36,6 @@ export function JsonFormatterTool() {
     }
   };
 
-  const handleCopy = () => {
-    if (!output) return;
-    navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <div className="space-y-6">
       {/* Tool Header */}
@@ -65,10 +58,10 @@ export function JsonFormatterTool() {
           <Button variant="outline" size="sm" onClick={() => setInput("")} disabled={!input}>
             Clear
           </Button>
-          <Button variant="secondary" size="sm" onClick={handleMinify}>
+          <Button variant="secondary" size="sm" onClick={handleMinify} disabled={!input}>
             Minify
           </Button>
-          <Button variant="default" size="sm" className="gap-1.5" onClick={handleFormat}>
+          <Button variant="default" size="sm" className="gap-1.5" onClick={handleFormat} disabled={!input}>
             <Play className="h-3.5 w-3.5" />
             Format JSON
           </Button>
@@ -81,7 +74,10 @@ export function JsonFormatterTool() {
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
             <span>JSON Input</span>
-            <span className="font-mono text-[11px]">{input.length} chars</span>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[11px]">{input.length} chars</span>
+              <CopyButton text={input} label="Copy Input" size="sm" className="h-6 px-2 text-[11px]" />
+            </div>
           </div>
           <textarea
             value={input}
@@ -103,16 +99,12 @@ export function JsonFormatterTool() {
                 </span>
               )}
             </span>
-            <Button
-              variant="ghost"
+            <CopyButton
+              text={output}
+              label="Copy Output"
               size="sm"
-              className="h-6 px-2 text-xs gap-1"
-              onClick={handleCopy}
-              disabled={!output}
-            >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-              <span>{copied ? "Copied" : "Copy"}</span>
-            </Button>
+              className="h-6 px-2 text-[11px]"
+            />
           </div>
           <div className="relative">
             {error ? (
@@ -164,9 +156,12 @@ export function JsonFormatterTool() {
                 className="cursor-pointer p-2 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/70 text-xs font-mono flex justify-between items-center transition-colors"
               >
                 <span className="truncate max-w-lg text-foreground">{item.input}</span>
-                <span className="text-[10px] text-muted-foreground shrink-0">
-                  {new Date(item.createdAt).toLocaleTimeString()}
-                </span>
+                <div className="flex items-center gap-2 shrink-0">
+                  <CopyButton text={item.input} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
+                  <span className="text-[10px] text-muted-foreground">
+                    {new Date(item.createdAt).toLocaleTimeString()}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
