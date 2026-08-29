@@ -210,12 +210,12 @@ export function RegexTesterTool() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20">
-              <FileCode2 className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary border border-primary/20">
+              <FileCode2 className="h-4 w-4" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Regex Tester & Evaluator</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Regex Tester & Evaluator</h1>
+              <p className="text-xs text-muted-foreground font-sans">
                 Test and debug JavaScript Regular Expressions in real-time with live match highlighting and capture groups.
               </p>
             </div>
@@ -236,10 +236,10 @@ export function RegexTesterTool() {
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5 text-xs"
+            className="gap-1.5"
             onClick={() => handleSelectPreset(DEFAULT_PRESET)}
           >
-            <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
             Sample
           </Button>
 
@@ -252,7 +252,6 @@ export function RegexTesterTool() {
               setEvaluation({ isValid: true, matches: [], totalMatches: 0, executionTimeMs: 0 });
             }}
             disabled={!pattern && !testString}
-            className="text-xs"
           >
             Clear
           </Button>

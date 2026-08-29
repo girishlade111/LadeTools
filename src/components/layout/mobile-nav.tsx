@@ -54,12 +54,12 @@ export function MobileNav({
             }}
             className="flex items-center gap-2.5 text-left"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs">
               <Wrench className="h-4 w-4" />
             </div>
             <div>
-              <span className="font-bold text-base tracking-tight">LadeTools</span>
-              <span className="block text-[10px] text-muted-foreground">Mobile Navigation</span>
+              <span className="font-serif font-bold text-base tracking-tight text-foreground">LadeTools</span>
+              <span className="block text-[10px] font-mono text-muted-foreground">OFFLINE STUDIO</span>
             </div>
           </button>
 
@@ -67,7 +67,7 @@ export function MobileNav({
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="h-8 w-8 rounded-lg text-muted-foreground"
+            className="h-8 w-8 rounded-md text-muted-foreground"
             aria-label="Close menu"
           >
             <X className="h-4 w-4" />
@@ -82,35 +82,35 @@ export function MobileNav({
               onSelectTool("home");
               onClose();
             }}
-            className={`w-full flex items-center justify-between px-3 py-3 rounded-xl text-xs font-medium transition-colors mb-2 ${
+            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg font-mono text-xs transition-colors mb-2 ${
               isHome
-                ? "bg-primary text-primary-foreground font-semibold shadow-sm"
+                ? "bg-secondary text-primary font-semibold border border-border"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
             }`}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <div
-                className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-                  isHome ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"
+                className={`flex h-6 w-6 items-center justify-center rounded-md ${
+                  isHome ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                 }`}
               >
-                <LayoutGrid className="h-4 w-4" />
+                <LayoutGrid className="h-3.5 w-3.5" />
               </div>
               <div className="text-left">
-                <div>All Tools Overview</div>
-                <div className="text-[10px] opacity-75">Home landing page & toolbox summary</div>
+                <div className="font-semibold">Overview</div>
+                <div className="text-[10px] opacity-75 font-sans">Home landing & tools</div>
               </div>
             </div>
             <span
               className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase font-semibold ${
-                isHome ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"
+                isHome ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
               }`}
             >
               Home
             </span>
           </button>
 
-          <div className="px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="px-3 py-2 text-[10px] font-mono font-semibold uppercase tracking-wider text-muted-foreground">
             Available Tools
           </div>
 
@@ -125,30 +125,30 @@ export function MobileNav({
                   onSelectTool(tool.id);
                   onClose();
                 }}
-                className={`w-full flex items-center justify-between px-3 py-3 rounded-xl text-xs font-medium transition-colors ${
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg font-mono text-xs transition-colors ${
                   isActive
-                    ? "bg-primary text-primary-foreground font-semibold shadow-sm"
+                    ? "bg-secondary text-primary font-semibold border border-border"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <div
-                    className={`flex h-7 w-7 items-center justify-center rounded-lg ${
-                      isActive ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"
+                    className={`flex h-6 w-6 items-center justify-center rounded-md ${
+                      isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
                     }`}
                   >
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5" />
                   </div>
                   <div className="text-left">
-                    <div>{tool.name}</div>
-                    <div className="text-[10px] opacity-75 line-clamp-1">{tool.description}</div>
+                    <div className="font-semibold">{tool.name}</div>
+                    <div className="text-[10px] opacity-75 font-sans line-clamp-1">{tool.description}</div>
                   </div>
                 </div>
 
                 {tool.badge && (
                   <span
                     className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase font-semibold ${
-                      isActive ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"
+                      isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {tool.badge}

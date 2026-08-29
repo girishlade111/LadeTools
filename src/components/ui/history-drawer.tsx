@@ -87,17 +87,17 @@ export function HistoryDrawer({
         </SheetTrigger>
 
         <SheetContent side="right" className="flex flex-col w-full sm:max-w-md p-6">
-          <SheetHeader className="pb-4 border-b border-border/60 text-left">
+          <SheetHeader className="pb-4 border-b border-border text-left">
             <div className="flex items-center justify-between pr-8">
               <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+                <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary border border-primary/20">
                   <History className="h-4 w-4" />
                 </div>
                 <div>
-                  <SheetTitle className="text-base font-bold tracking-tight">
+                  <SheetTitle className="text-base font-bold tracking-tight text-foreground">
                     {title}
                   </SheetTitle>
-                  <SheetDescription className="text-xs text-muted-foreground">
+                  <SheetDescription className="text-xs text-muted-foreground font-sans">
                     {description}
                   </SheetDescription>
                 </div>
@@ -157,12 +157,12 @@ export function HistoryDrawer({
                 <div
                   key={item.id}
                   onClick={() => handleItemClick(item.id)}
-                  className="group relative cursor-pointer p-3 rounded-xl border border-border/70 bg-card hover:border-primary/50 hover:bg-muted/40 transition-all duration-150 shadow-sm space-y-1.5"
+                  className="group relative cursor-pointer p-3 rounded-lg border border-border bg-card hover:border-primary/50 hover:bg-muted/40 transition-all duration-150 shadow-xs space-y-1.5"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5 min-w-0">
                       {item.badge && (
-                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-mono uppercase font-semibold shrink-0">
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-md bg-secondary text-primary border border-border font-mono uppercase font-semibold shrink-0">
                           {item.badge}
                         </span>
                       )}

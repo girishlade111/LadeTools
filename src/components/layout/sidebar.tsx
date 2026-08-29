@@ -11,24 +11,24 @@ export function Sidebar({ activeToolId, onSelectTool, dbStatus = "IndexedDB Read
   const isHome = activeToolId === "home";
 
   return (
-    <aside className="hidden md:flex w-64 flex-col border-r border-border bg-card/60 backdrop-blur-xl shrink-0 h-screen sticky top-0">
+    <aside className="hidden md:flex w-64 flex-col border-r border-border bg-card shrink-0 h-screen sticky top-0">
       {/* Brand Header */}
       <button
         onClick={() => onSelectTool("home")}
-        className="h-16 flex items-center gap-3 px-6 border-b border-border/60 text-left hover:bg-muted/40 transition-colors w-full"
+        className="h-16 flex items-center gap-3 px-6 border-b border-border text-left hover:bg-muted/40 transition-colors w-full"
       >
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-blue-600 text-primary-foreground shadow-md shadow-primary/20">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs border border-primary/20">
           <Wrench className="h-4 w-4" />
         </div>
         <div>
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
+            <span className="font-serif font-bold text-xl tracking-tight text-foreground">
               LadeTools
             </span>
           </div>
-          <span className="text-[10px] text-muted-foreground font-medium flex items-center gap-1">
+          <span className="text-[10px] font-mono text-muted-foreground flex items-center gap-1">
             <Sparkles className="h-2.5 w-2.5 text-primary" />
-            Client-Side Toolbox
+            OFFLINE STUDIO
           </span>
         </div>
       </button>
@@ -39,29 +39,29 @@ export function Sidebar({ activeToolId, onSelectTool, dbStatus = "IndexedDB Read
         <div className="space-y-1">
           <button
             onClick={() => onSelectTool("home")}
-            className={`w-full group flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative select-none ${
+            className={`w-full group flex items-center justify-between px-3 py-2 rounded-lg font-mono text-xs transition-all duration-150 relative select-none ${
               isHome
-                ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 font-semibold"
+                ? "bg-secondary text-primary font-semibold border border-border"
                 : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
             }`}
           >
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex items-center gap-2.5 min-w-0">
               <div
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors ${
                   isHome
-                    ? "bg-primary-foreground/20 text-primary-foreground"
-                    : "bg-muted/80 text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground group-hover:text-primary"
                 }`}
               >
                 <LayoutGrid className="h-3.5 w-3.5" />
               </div>
-              <span className="truncate">All Tools Overview</span>
+              <span className="truncate">Overview</span>
             </div>
             <span
-              className={`text-[10px] px-1.5 py-0.5 rounded font-mono uppercase tracking-tight shrink-0 transition-colors ${
+              className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase tracking-tight shrink-0 transition-colors ${
                 isHome
-                  ? "bg-primary-foreground/20 text-primary-foreground"
-                  : "bg-muted/80 text-muted-foreground group-hover:bg-muted group-hover:text-foreground"
+                  ? "bg-primary/10 text-primary font-semibold"
+                  : "bg-muted text-muted-foreground"
               }`}
             >
               Home
@@ -70,9 +70,9 @@ export function Sidebar({ activeToolId, onSelectTool, dbStatus = "IndexedDB Read
         </div>
 
         <div className="space-y-1">
-          <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80 flex items-center justify-between">
+          <div className="px-3 pb-2 text-[10px] font-mono font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
             <span>Developer Tools</span>
-            <span className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded">{TOOLS_REGISTRY.length}</span>
+            <span className="text-[10px] font-mono bg-muted px-1.5 py-0.5 rounded text-muted-foreground">{TOOLS_REGISTRY.length}</span>
           </div>
 
           <nav className="space-y-1">
@@ -84,18 +84,18 @@ export function Sidebar({ activeToolId, onSelectTool, dbStatus = "IndexedDB Read
                 <button
                   key={tool.id}
                   onClick={() => onSelectTool(tool.id)}
-                  className={`w-full group flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-all duration-150 relative select-none ${
+                  className={`w-full group flex items-center justify-between px-3 py-2 rounded-lg font-mono text-xs transition-all duration-150 relative select-none ${
                     isActive
-                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 font-semibold"
+                      ? "bg-secondary text-primary font-semibold border border-border"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
                   }`}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <div
-                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors ${
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors ${
                         isActive
-                          ? "bg-primary-foreground/20 text-primary-foreground"
-                          : "bg-muted/80 text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary/10"
                       }`}
                     >
                       <Icon className="h-3.5 w-3.5" />
@@ -105,10 +105,10 @@ export function Sidebar({ activeToolId, onSelectTool, dbStatus = "IndexedDB Read
 
                   {tool.badge && (
                     <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded font-mono uppercase tracking-tight shrink-0 transition-colors ${
+                      className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase tracking-tight shrink-0 transition-colors ${
                         isActive
-                          ? "bg-primary-foreground/20 text-primary-foreground"
-                          : "bg-muted/80 text-muted-foreground group-hover:bg-muted group-hover:text-foreground"
+                          ? "bg-primary/10 text-primary font-semibold"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {tool.badge}
@@ -122,13 +122,13 @@ export function Sidebar({ activeToolId, onSelectTool, dbStatus = "IndexedDB Read
       </div>
 
       {/* Sidebar Footer */}
-      <div className="p-4 border-t border-border/60 bg-muted/20 space-y-2">
+      <div className="p-3.5 border-t border-border bg-card space-y-2">
         <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
           <div className="flex items-center gap-1.5 truncate">
-            <Database className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+            <Database className="h-3.5 w-3.5 text-primary shrink-0" />
             <span className="truncate">{dbStatus}</span>
           </div>
-          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
         </div>
       </div>
     </aside>

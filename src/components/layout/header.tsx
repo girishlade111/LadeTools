@@ -18,17 +18,17 @@ export function Header({ activeToolId, onOpenMobileNav, onNavigateHome }: Header
   const toolName = isHome ? "All Tools Overview" : activeTool?.name || "LadeTools";
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border/60 bg-background/80 px-4 sm:px-8 backdrop-blur-md">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border bg-card px-4 sm:px-8">
       {/* Left: Mobile hamburger & Active Tool Breadcrumb */}
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden h-9 w-9 rounded-lg"
+          className="md:hidden h-8 w-8 rounded-md"
           onClick={onOpenMobileNav}
           aria-label="Open Navigation Menu"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-4 w-4" />
         </Button>
 
         {/* Mobile Logo Fallback */}
@@ -36,25 +36,25 @@ export function Header({ activeToolId, onOpenMobileNav, onNavigateHome }: Header
           onClick={onNavigateHome}
           className="flex md:hidden items-center gap-2 text-left"
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+          <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-xs">
             <Wrench className="h-3.5 w-3.5" />
           </div>
-          <span className="font-bold text-base tracking-tight">LadeTools</span>
+          <span className="font-serif font-bold text-base tracking-tight">LadeTools</span>
         </button>
 
         {/* Desktop Active Tool Breadcrumb */}
         <div className="hidden md:flex items-center gap-2.5 text-sm">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-primary border border-primary/20">
             <Icon className="h-3.5 w-3.5" />
           </div>
-          <span className="font-semibold text-foreground">{toolName}</span>
+          <span className="font-serif font-bold text-base text-foreground tracking-tight">{toolName}</span>
           {!isHome && activeTool?.badge && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted font-mono uppercase text-muted-foreground font-semibold">
+            <span className="text-[10px] px-2 py-0.5 rounded-md bg-muted font-mono uppercase text-muted-foreground font-semibold border border-border">
               {activeTool.badge}
             </span>
           )}
           {isHome && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-mono uppercase font-semibold">
+            <span className="text-[10px] px-2 py-0.5 rounded-md bg-primary/10 text-primary font-mono uppercase font-semibold border border-primary/20">
               5 Client-Side Tools
             </span>
           )}

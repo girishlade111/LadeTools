@@ -16,12 +16,18 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        serif: ["'Lora'", "'Playfair Display'", "Georgia", "serif"],
+        mono: ["'JetBrains Mono'", "'IBM Plex Mono'", "Menlo", "Consolas", "monospace"],
+        sans: ["'Inter'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "Roboto", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        surface: "hsl(var(--card))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -49,6 +55,19 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        // Studio specific semantic color helpers
+        studio: {
+          cream: "#FAF6EF",
+          card: "#FFFFFF",
+          forest: "#1F4D3D",
+          charcoal: "#1A1A1A",
+          muted: "#6B6B63",
+          border: "#E5E0D5",
+          tan: "#F0EBE0",
+          success: "#2D6A4F",
+          warning: "#D97706",
+          error: "#DC2626",
         },
       },
       borderRadius: {

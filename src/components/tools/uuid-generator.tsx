@@ -229,12 +229,12 @@ export function UuidGeneratorTool() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-pink-500/10 text-pink-500 border border-pink-500/20">
-              <Hash className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary border border-primary/20">
+              <Hash className="h-4 w-4" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">UUID & Timestamp Utility</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">UUID & Timestamp Utility</h1>
+              <p className="text-xs text-muted-foreground font-sans">
                 Generate cryptographically secure UUID v4 identifiers and convert Unix timestamps across standard formats.
               </p>
             </div>
@@ -244,12 +244,12 @@ export function UuidGeneratorTool() {
         {/* Global Toolbar Actions */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           {/* History filter toggle */}
-          <div className="inline-flex rounded-lg border border-border/80 p-0.5 bg-muted/40 text-[11px]">
+          <div className="inline-flex rounded-md border border-border p-0.5 bg-secondary text-[11px] font-mono">
             <button
               onClick={() => setHistoryFilter("all")}
-              className={`px-2 py-0.5 rounded font-medium transition-all ${
+              className={`px-2 py-0.5 rounded transition-all ${
                 historyFilter === "all"
-                  ? "bg-card text-foreground font-semibold shadow-sm"
+                  ? "bg-card text-foreground font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -257,9 +257,9 @@ export function UuidGeneratorTool() {
             </button>
             <button
               onClick={() => setHistoryFilter("uuid")}
-              className={`px-2 py-0.5 rounded font-medium transition-all ${
+              className={`px-2 py-0.5 rounded transition-all ${
                 historyFilter === "uuid"
-                  ? "bg-card text-foreground font-semibold shadow-sm"
+                  ? "bg-card text-foreground font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -267,9 +267,9 @@ export function UuidGeneratorTool() {
             </button>
             <button
               onClick={() => setHistoryFilter("timestamp")}
-              className={`px-2 py-0.5 rounded font-medium transition-all ${
+              className={`px-2 py-0.5 rounded transition-all ${
                 historyFilter === "timestamp"
-                  ? "bg-card text-foreground font-semibold shadow-sm"
+                  ? "bg-card text-foreground font-semibold shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -289,11 +289,11 @@ export function UuidGeneratorTool() {
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5 text-xs"
+            className="gap-1.5"
             onClick={handleSetToCurrentTime}
             title="Fill in current Unix Epoch timestamp"
           >
-            <Clock className="h-3.5 w-3.5 text-pink-500" />
+            <Clock className="h-3.5 w-3.5 text-primary" />
             Current Time
           </Button>
 

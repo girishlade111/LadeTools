@@ -176,12 +176,12 @@ export function Base64Tool() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-              <Binary className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary border border-primary/20">
+              <Binary className="h-4 w-4" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Base64 Encoder & Decoder</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">Base64 Encoder & Decoder</h1>
+              <p className="text-xs text-muted-foreground font-sans">
                 Convert text and files to Base64 format with full UTF-8 and Unicode emoji support.
               </p>
             </div>
@@ -202,7 +202,7 @@ export function Base64Tool() {
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5 text-xs"
+            className="gap-1.5"
             onClick={() => {
               if (mode === "encode") {
                 setInput(SAMPLE_TEXT);
@@ -212,7 +212,7 @@ export function Base64Tool() {
               setUploadedFile(null);
             }}
           >
-            <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
             Sample
           </Button>
 
@@ -226,7 +226,6 @@ export function Base64Tool() {
               setError(null);
             }}
             disabled={!input && !output}
-            className="text-xs"
           >
             Clear
           </Button>
@@ -234,14 +233,14 @@ export function Base64Tool() {
       </div>
 
       {/* Main Mode Toggle Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl border border-border bg-card/60">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border border-border bg-card">
         {/* Mode Selector */}
-        <div className="inline-flex rounded-lg border border-border/80 p-1 bg-muted/40">
+        <div className="inline-flex rounded-md border border-border p-1 bg-secondary">
           <button
             onClick={() => handleModeChange("encode")}
-            className={`flex items-center gap-2 px-4 py-1.5 text-xs font-semibold rounded-md transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 font-mono text-xs font-semibold rounded transition-all ${
               mode === "encode"
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-primary text-primary-foreground shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -249,9 +248,9 @@ export function Base64Tool() {
           </button>
           <button
             onClick={() => handleModeChange("decode")}
-            className={`flex items-center gap-2 px-4 py-1.5 text-xs font-semibold rounded-md transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-1.5 font-mono text-xs font-semibold rounded transition-all ${
               mode === "decode"
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-primary text-primary-foreground shadow-xs"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >

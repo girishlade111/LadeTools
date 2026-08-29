@@ -160,12 +160,12 @@ export function JwtDecoderTool() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/10 text-purple-500 border border-purple-500/20">
-              <KeyRound className="h-5 w-5" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary border border-primary/20">
+              <KeyRound className="h-4 w-4" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">JWT Token Decoder</h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">JWT Token Decoder</h1>
+              <p className="text-xs text-muted-foreground font-sans">
                 Inspect, debug, and validate JSON Web Token claims offline with 100% client-side security.
               </p>
             </div>
@@ -175,9 +175,9 @@ export function JwtDecoderTool() {
         {/* Global Toolbar Actions */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           {/* Privacy Note Badge */}
-          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-400 font-medium">
-            <Lock className="h-3 w-3 shrink-0" />
-            <span>History is stored locally on your device only, never sent anywhere</span>
+          <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-secondary border border-border text-[11px] font-mono text-muted-foreground">
+            <Lock className="h-3 w-3 text-primary shrink-0" />
+            <span>Local memory only &bull; Offline</span>
           </div>
 
           <HistoryDrawer
@@ -192,22 +192,22 @@ export function JwtDecoderTool() {
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5 text-xs"
+            className="gap-1.5"
             onClick={() => handleLoadSample(false)}
             title="Load an active valid sample JWT"
           >
-            <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
             Sample (Active)
           </Button>
 
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5 text-xs"
+            className="gap-1.5"
             onClick={() => handleLoadSample(true)}
             title="Load an expired sample JWT"
           >
-            <Clock className="h-3.5 w-3.5 text-rose-500" />
+            <Clock className="h-3.5 w-3.5 text-muted-foreground" />
             Sample (Expired)
           </Button>
 
