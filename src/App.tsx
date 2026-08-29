@@ -11,8 +11,11 @@ export function App() {
       if (TOOLS_REGISTRY.some((t) => t.id === hash)) {
         return hash;
       }
+      if (hash === "home") {
+        return "home";
+      }
     }
-    return "json-formatter";
+    return "home";
   });
 
   useEffect(() => {
@@ -26,6 +29,8 @@ export function App() {
       const hash = window.location.hash.replace("#", "") as ToolId;
       if (TOOLS_REGISTRY.some((t) => t.id === hash)) {
         setActiveToolId(hash);
+      } else if (!hash || hash === "home") {
+        setActiveToolId("home");
       }
     };
 
@@ -35,7 +40,11 @@ export function App() {
 
   const handleSelectTool = (id: ToolId) => {
     setActiveToolId(id);
-    window.location.hash = id;
+    if (id === "home") {
+      window.location.hash = "";
+    } else {
+      window.location.hash = id;
+    }
   };
 
   return (

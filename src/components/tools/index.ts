@@ -24,6 +24,7 @@ export interface ToolMeta {
 }
 
 export type ToolId =
+  | "home"
   | "json-formatter"
   | "base64"
   | "jwt-decoder"

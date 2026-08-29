@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TOOLS_REGISTRY, type ToolId } from "@/components/tools";
 
 import { SupportFooter } from "@/components/support-footer";
+import { HomePage } from "@/components/pages/home-page";
 
 interface AppLayoutProps {
   activeToolId: ToolId;
@@ -17,7 +18,8 @@ interface AppLayoutProps {
 export function AppLayout({ activeToolId, onSelectTool, dbStatus }: AppLayoutProps) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const activeTool = TOOLS_REGISTRY.find((t) => t.id === activeToolId);
-  const ActiveComponent = activeTool?.component || TOOLS_REGISTRY[0].component;
+  const isHome = activeToolId === "home";
+  const ActiveComponent = activeTool?.component || null;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-row">
@@ -42,10 +44,15 @@ export function AppLayout({ activeToolId, onSelectTool, dbStatus }: AppLayoutPro
         <Header
           activeToolId={activeToolId}
           onOpenMobileNav={() => setMobileNavOpen(true)}
+          onNavigateHome={() => onSelectTool("home")}
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto animate-in fade-in duration-200 flex flex-col justify-between">
-          <ActiveComponent />
+          {isHome ? (
+            <HomePage onSelectTool={onSelectTool} />
+          ) : (
+            ActiveComponent && <ActiveComponent />
+          )}
           <SupportFooter />
         </main>
       </div>
