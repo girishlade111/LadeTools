@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
-import { useJwtHistory, addJwtHistory } from "@/db";
-import { KeyRound, ShieldAlert, History, Key } from "lucide-react";
+import { HistoryDrawer, type HistoryDrawerItem } from "@/components/ui/history-drawer";
+import { useJwtHistory, addJwtHistory, deleteHistoryItem, clearHistory } from "@/db";
+import { KeyRound, ShieldAlert, Key } from "lucide-react";
 
 export function JwtDecoderTool() {
   const [token, setToken] = useState(
@@ -34,6 +35,47 @@ export function JwtDecoderTool() {
     }
   };
 
+  const drawerItems: HistoryDrawerItem[] = (history || [])
+    .filter((item): item is typeof item & { id: number } => item.id !== undefined)
+    .map((item) => {
+      let subject = "JWT Token";
+      try {
+        const parts = item.token.split(".");
+        if (parts.length === 3) {
+          const p = JSON.parse(decodeURIComponent(escape(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")))));
+          if (p.sub) subject = `Sub: ${p.sub}`;
+          else if (p.name) subject = `Name: ${p.name}`;
+          else if (p.email) subject = `Email: ${p.email}`;
+        }
+      } catch {
+        // fallback
+      }
+
+      return {
+        id: item.id,
+        label: subject,
+        secondaryLabel: item.token,
+        createdAt: item.createdAt,
+      };
+    });
+
+  const handleSelectHistory = (id: number) => {
+    const item = history?.find((h) => h.id === id);
+    if (!item) return;
+
+    setToken(item.token);
+    try {
+      const parts = item.token.split(".");
+      if (parts.length === 3) {
+        setHeader(JSON.stringify(JSON.parse(decodeURIComponent(escape(atob(parts[0].replace(/-/g, "+").replace(/_/g, "/"))))), null, 2));
+        setPayload(JSON.stringify(JSON.parse(decodeURIComponent(escape(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/"))))), null, 2));
+        setError(null);
+      }
+    } catch {
+      //
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -50,7 +92,16 @@ export function JwtDecoderTool() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          <HistoryDrawer
+            title="JWT History"
+            description="Recent inspected JSON Web Tokens"
+            items={drawerItems}
+            onSelect={handleSelectHistory}
+            onDelete={(id) => deleteHistoryItem("jwtHistory", id)}
+            onClearAll={() => clearHistory("jwtHistory")}
+          />
+
           <Button variant="outline" size="sm" onClick={() => setToken("")} disabled={!token}>
             Clear
           </Button>
@@ -93,7 +144,7 @@ export function JwtDecoderTool() {
               readOnly
               value={header}
               placeholder="Decoded header..."
-              className="w-full h-64 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs leading-relaxed focus:outline-none resize-none"
+              className="w-full h-80 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs leading-relaxed focus:outline-none resize-none"
             />
           </div>
           <div className="space-y-2">
@@ -105,42 +156,11 @@ export function JwtDecoderTool() {
               readOnly
               value={payload}
               placeholder="Decoded payload claims..."
-              className="w-full h-64 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs leading-relaxed focus:outline-none resize-none"
+              className="w-full h-80 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs leading-relaxed focus:outline-none resize-none"
             />
           </div>
         </div>
       )}
-
-      {/* History */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <History className="h-4 w-4 text-primary" />
-            <span>Recent JWT Runs ({history?.length || 0})</span>
-          </div>
-        </div>
-        {history && history.length > 0 ? (
-          <div className="space-y-1.5 max-h-32 overflow-y-auto">
-            {history.slice(0, 3).map((item) => (
-              <div
-                key={item.id}
-                onClick={() => setToken(item.token)}
-                className="cursor-pointer p-2 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/70 text-xs font-mono flex justify-between items-center transition-colors"
-              >
-                <span className="truncate max-w-lg text-foreground">{item.token}</span>
-                <div className="flex items-center gap-2 shrink-0">
-                  <CopyButton text={item.token} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
-                  <span className="text-[10px] text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground italic">No past runs recorded yet.</p>
-        )}
-      </div>
     </div>
   );
 }

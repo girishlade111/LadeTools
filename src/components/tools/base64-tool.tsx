@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
-import { useBase64History, addBase64History } from "@/db";
-import { Binary, History, RefreshCw } from "lucide-react";
+import { HistoryDrawer, type HistoryDrawerItem } from "@/components/ui/history-drawer";
+import { useBase64History, addBase64History, deleteHistoryItem, clearHistory } from "@/db";
+import { Binary, RefreshCw } from "lucide-react";
 
 export function Base64Tool() {
   const [input, setInput] = useState("Hello LadeTools Developer!");
@@ -30,6 +31,26 @@ export function Base64Tool() {
     }
   };
 
+  const drawerItems: HistoryDrawerItem[] = (history || [])
+    .filter((item): item is typeof item & { id: number } => item.id !== undefined)
+    .map((item) => ({
+      id: item.id,
+      label: item.input.length > 40 ? `${item.input.slice(0, 37)}...` : item.input,
+      secondaryLabel: `Result: ${item.output.length > 50 ? `${item.output.slice(0, 47)}...` : item.output}`,
+      badge: item.mode,
+      createdAt: item.createdAt,
+    }));
+
+  const handleSelectHistory = (id: number) => {
+    const item = history?.find((h) => h.id === id);
+    if (!item) return;
+
+    setInput(item.input);
+    setOutput(item.output);
+    setMode(item.mode);
+    setError(null);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -46,7 +67,16 @@ export function Base64Tool() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          <HistoryDrawer
+            title="Base64 History"
+            description="Recent encoded & decoded strings"
+            items={drawerItems}
+            onSelect={handleSelectHistory}
+            onDelete={(id) => deleteHistoryItem("base64History", id)}
+            onClearAll={() => clearHistory("base64History")}
+          />
+
           <div className="inline-flex rounded-lg border border-border p-1 bg-muted/30">
             <button
               onClick={() => {
@@ -94,7 +124,7 @@ export function Base64Tool() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={mode === "encode" ? "Type text to encode..." : "Paste Base64 string to decode..."}
-            className="w-full h-80 p-3.5 rounded-xl border border-border bg-card font-mono text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+            className="w-full h-96 p-3.5 rounded-xl border border-border bg-card font-mono text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
           />
         </div>
 
@@ -104,7 +134,7 @@ export function Base64Tool() {
             <CopyButton text={output} label="Copy Output" size="sm" className="h-6 px-2 text-[11px]" />
           </div>
           {error ? (
-            <div className="w-full h-80 p-4 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive font-mono text-xs">
+            <div className="w-full h-96 p-4 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive font-mono text-xs">
               <strong>Error:</strong> {error}
             </div>
           ) : (
@@ -112,50 +142,10 @@ export function Base64Tool() {
               readOnly
               value={output}
               placeholder="Output will appear here..."
-              className="w-full h-80 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs leading-relaxed focus:outline-none resize-none"
+              className="w-full h-96 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs leading-relaxed focus:outline-none resize-none"
             />
           )}
         </div>
-      </div>
-
-      {/* History */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <History className="h-4 w-4 text-primary" />
-            <span>Recent Base64 Runs ({history?.length || 0})</span>
-          </div>
-        </div>
-        {history && history.length > 0 ? (
-          <div className="space-y-1.5 max-h-32 overflow-y-auto">
-            {history.slice(0, 3).map((item) => (
-              <div
-                key={item.id}
-                onClick={() => {
-                  setInput(item.input);
-                  setOutput(item.output);
-                  setMode(item.mode);
-                }}
-                className="cursor-pointer p-2 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/70 text-xs font-mono flex justify-between items-center transition-colors"
-              >
-                <div className="flex items-center gap-2 truncate">
-                  <span className="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[10px] uppercase font-semibold">
-                    {item.mode}
-                  </span>
-                  <span className="truncate max-w-sm text-foreground">{item.input}</span>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <CopyButton text={item.output} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
-                  <span className="text-[10px] text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground italic">No past runs recorded yet.</p>
-        )}
       </div>
     </div>
   );

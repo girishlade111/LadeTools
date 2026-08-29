@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
-import { useRegexHistory, addRegexHistory } from "@/db";
-import { FileCode2, Play, History, AlertCircle } from "lucide-react";
+import { HistoryDrawer, type HistoryDrawerItem } from "@/components/ui/history-drawer";
+import { useRegexHistory, addRegexHistory, deleteHistoryItem, clearHistory } from "@/db";
+import { FileCode2, Play, AlertCircle } from "lucide-react";
 
 export function RegexTesterTool() {
   const [pattern, setPattern] = useState("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
@@ -25,6 +26,34 @@ export function RegexTesterTool() {
     }
   };
 
+  const drawerItems: HistoryDrawerItem[] = (history || [])
+    .filter((item): item is typeof item & { id: number } => item.id !== undefined)
+    .map((item) => ({
+      id: item.id,
+      label: `/${item.pattern}/${item.flags}`,
+      secondaryLabel: `Test: ${item.testString.length > 50 ? `${item.testString.slice(0, 47)}...` : item.testString}`,
+      createdAt: item.createdAt,
+    }));
+
+  const handleSelectHistory = (id: number) => {
+    const item = history?.find((h) => h.id === id);
+    if (!item) return;
+
+    setPattern(item.pattern);
+    setFlags(item.flags);
+    setTestString(item.testString);
+
+    try {
+      const regex = new RegExp(item.pattern, item.flags);
+      const matched = item.testString.match(regex);
+      setMatches(matched ? Array.from(matched) : []);
+      setError(null);
+    } catch (err: unknown) {
+      setError((err as Error).message);
+      setMatches([]);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -41,10 +70,21 @@ export function RegexTesterTool() {
           </div>
         </div>
 
-        <Button variant="default" size="sm" className="gap-1.5" onClick={handleTestRegex} disabled={!pattern}>
-          <Play className="h-3.5 w-3.5" />
-          Test Expression
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          <HistoryDrawer
+            title="Regex History"
+            description="Recent regular expression patterns & test strings"
+            items={drawerItems}
+            onSelect={handleSelectHistory}
+            onDelete={(id) => deleteHistoryItem("regexHistory", id)}
+            onClearAll={() => clearHistory("regexHistory")}
+          />
+
+          <Button variant="default" size="sm" className="gap-1.5" onClick={handleTestRegex} disabled={!pattern}>
+            <Play className="h-3.5 w-3.5" />
+            Test Expression
+          </Button>
+        </div>
       </div>
 
       {/* Pattern Input & Flags */}
@@ -85,7 +125,7 @@ export function RegexTesterTool() {
             value={testString}
             onChange={(e) => setTestString(e.target.value)}
             placeholder="Type text to match against..."
-            className="w-full h-64 p-3.5 rounded-xl border border-border bg-card font-mono text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
+            className="w-full h-80 p-3.5 rounded-xl border border-border bg-card font-mono text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none"
           />
         </div>
 
@@ -101,16 +141,16 @@ export function RegexTesterTool() {
             />
           </div>
           {error ? (
-            <div className="w-full h-64 p-4 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive font-mono text-xs flex items-start gap-2">
+            <div className="w-full h-80 p-4 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive font-mono text-xs flex items-start gap-2">
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
               <div>
                 <strong>Regex Syntax Error:</strong> {error}
               </div>
             </div>
           ) : (
-            <div className="w-full h-64 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs space-y-2 overflow-y-auto">
+            <div className="w-full h-80 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs space-y-2 overflow-y-auto">
               {matches.length === 0 ? (
-                <div className="text-muted-foreground italic text-center py-12">
+                <div className="text-muted-foreground italic text-center py-16">
                   No matches found. Check your pattern or click "Test Expression".
                 </div>
               ) : (
@@ -130,44 +170,6 @@ export function RegexTesterTool() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* History */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <History className="h-4 w-4 text-primary" />
-            <span>Recent Regex Tests ({history?.length || 0})</span>
-          </div>
-        </div>
-        {history && history.length > 0 ? (
-          <div className="space-y-1.5 max-h-32 overflow-y-auto">
-            {history.slice(0, 3).map((item) => (
-              <div
-                key={item.id}
-                onClick={() => {
-                  setPattern(item.pattern);
-                  setFlags(item.flags);
-                  setTestString(item.testString);
-                }}
-                className="cursor-pointer p-2 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/70 text-xs font-mono flex justify-between items-center transition-colors"
-              >
-                <div className="flex items-center gap-2 truncate">
-                  <span className="text-primary font-semibold">/{item.pattern}/{item.flags}</span>
-                  <span className="text-muted-foreground truncate max-w-sm">{item.testString}</span>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <CopyButton text={`/${item.pattern}/${item.flags}`} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
-                  <span className="text-[10px] text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground italic">No past runs recorded yet.</p>
-        )}
       </div>
     </div>
   );

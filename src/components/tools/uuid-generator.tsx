@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
-import { useUuidHistory, addUuidHistory } from "@/db";
-import { Hash, Sparkles, History, Clock } from "lucide-react";
+import { HistoryDrawer, type HistoryDrawerItem } from "@/components/ui/history-drawer";
+import { useUuidHistory, addUuidHistory, deleteHistoryItem, clearHistory } from "@/db";
+import { Hash, Sparkles, Clock } from "lucide-react";
 
 export function UuidGeneratorTool() {
   const [generatedItems, setGeneratedItems] = useState<string[]>([
@@ -31,6 +32,22 @@ export function UuidGeneratorTool() {
     await addUuidHistory(`${now} (${iso})`, "timestamp");
   };
 
+  const drawerItems: HistoryDrawerItem[] = (history || [])
+    .filter((item): item is typeof item & { id: number } => item.id !== undefined)
+    .map((item) => ({
+      id: item.id,
+      label: item.value,
+      badge: item.type,
+      createdAt: item.createdAt,
+    }));
+
+  const handleSelectHistory = (id: number) => {
+    const item = history?.find((h) => h.id === id);
+    if (!item) return;
+
+    setGeneratedItems([item.value]);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -47,7 +64,16 @@ export function UuidGeneratorTool() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          <HistoryDrawer
+            title="UUID & Timestamp History"
+            description="Recent generated UUIDs & timestamp conversions"
+            items={drawerItems}
+            onSelect={handleSelectHistory}
+            onDelete={(id) => deleteHistoryItem("uuidHistory", id)}
+            onClearAll={() => clearHistory("uuidHistory")}
+          />
+
           <Button variant="outline" size="sm" className="gap-1.5" onClick={handleGenerateTimestamp}>
             <Clock className="h-3.5 w-3.5" />
             Current Timestamps
@@ -75,48 +101,13 @@ export function UuidGeneratorTool() {
           {generatedItems.map((val, idx) => (
             <div
               key={idx}
-              className="group p-3 rounded-xl border border-border bg-card hover:border-primary/50 transition-all duration-150 flex items-center justify-between font-mono text-xs"
+              className="group p-3.5 rounded-xl border border-border bg-card hover:border-primary/50 transition-all duration-150 flex items-center justify-between font-mono text-xs"
             >
               <span className="text-foreground font-medium select-all truncate max-w-xl">{val}</span>
               <CopyButton text={val} label="Copy" size="sm" className="h-7 px-2.5 text-xs" />
             </div>
           ))}
         </div>
-      </div>
-
-      {/* History */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <History className="h-4 w-4 text-primary" />
-            <span>Recent UUID/Timestamp History ({history?.length || 0})</span>
-          </div>
-        </div>
-        {history && history.length > 0 ? (
-          <div className="space-y-1.5 max-h-32 overflow-y-auto">
-            {history.slice(0, 4).map((item) => (
-              <div
-                key={item.id}
-                className="p-2 rounded-lg border border-border/50 bg-muted/30 text-xs font-mono flex justify-between items-center transition-colors"
-              >
-                <div className="flex items-center gap-2 truncate">
-                  <span className="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[10px] uppercase font-semibold">
-                    {item.type}
-                  </span>
-                  <span className="text-foreground truncate max-w-sm">{item.value}</span>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <CopyButton text={item.value} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
-                  <span className="text-[10px] text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground italic">No past runs recorded yet.</p>
-        )}
       </div>
     </div>
   );

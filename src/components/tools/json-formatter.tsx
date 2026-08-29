@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
-import { useJsonHistory, addJsonHistory } from "@/db";
-import { Braces, Play, History, CheckCircle2, AlertCircle } from "lucide-react";
+import { HistoryDrawer, type HistoryDrawerItem } from "@/components/ui/history-drawer";
+import { useJsonHistory, addJsonHistory, deleteHistoryItem, clearHistory } from "@/db";
+import { Braces, Play, CheckCircle2, AlertCircle } from "lucide-react";
 
 export function JsonFormatterTool() {
   const [input, setInput] = useState(`{\n  "title": "LadeTools",\n  "status": "ready",\n  "offline": true\n}`);
@@ -36,6 +37,39 @@ export function JsonFormatterTool() {
     }
   };
 
+  const drawerItems: HistoryDrawerItem[] = (history || [])
+    .filter((item): item is typeof item & { id: number } => item.id !== undefined)
+    .map((item) => {
+      let preview = item.input;
+      try {
+        const parsed = JSON.parse(item.input);
+        preview = JSON.stringify(parsed);
+      } catch {
+        // fallback
+      }
+      return {
+        id: item.id,
+        label: preview.length > 50 ? `${preview.slice(0, 47)}...` : preview,
+        secondaryLabel: item.input,
+        createdAt: item.createdAt,
+      };
+    });
+
+  const handleSelectHistory = (id: number) => {
+    const item = history?.find((h) => h.id === id);
+    if (!item) return;
+
+    setInput(item.input);
+    try {
+      const parsed = JSON.parse(item.input);
+      setOutput(JSON.stringify(parsed, null, 2));
+      setError(null);
+    } catch (err: unknown) {
+      setError((err as Error).message);
+      setOutput("");
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Tool Header */}
@@ -54,7 +88,16 @@ export function JsonFormatterTool() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          <HistoryDrawer
+            title="JSON History"
+            description="Recent formatted & validated JSON inputs"
+            items={drawerItems}
+            onSelect={handleSelectHistory}
+            onDelete={(id) => deleteHistoryItem("jsonHistory", id)}
+            onClearAll={() => clearHistory("jsonHistory")}
+          />
+
           <Button variant="outline" size="sm" onClick={() => setInput("")} disabled={!input}>
             Clear
           </Button>
@@ -83,7 +126,7 @@ export function JsonFormatterTool() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Paste your JSON here..."
-            className="w-full h-80 p-3.5 rounded-xl border border-border bg-card font-mono text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none selection:bg-primary/20"
+            className="w-full h-96 p-3.5 rounded-xl border border-border bg-card font-mono text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-primary/40 resize-none selection:bg-primary/20"
             spellCheck={false}
           />
         </div>
@@ -108,7 +151,7 @@ export function JsonFormatterTool() {
           </div>
           <div className="relative">
             {error ? (
-              <div className="w-full h-80 p-4 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive font-mono text-xs space-y-2 overflow-auto">
+              <div className="w-full h-96 p-4 rounded-xl border border-destructive/40 bg-destructive/10 text-destructive font-mono text-xs space-y-2 overflow-auto">
                 <div className="flex items-center gap-2 font-semibold">
                   <AlertCircle className="h-4 w-4 shrink-0" />
                   <span>Invalid JSON Syntax</span>
@@ -120,54 +163,12 @@ export function JsonFormatterTool() {
                 readOnly
                 value={output}
                 placeholder="Formatted JSON output will appear here..."
-                className="w-full h-80 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs leading-relaxed focus:outline-none resize-none"
+                className="w-full h-96 p-3.5 rounded-xl border border-border bg-muted/40 font-mono text-xs leading-relaxed focus:outline-none resize-none"
                 spellCheck={false}
               />
             )}
           </div>
         </div>
-      </div>
-
-      {/* History Preview */}
-      <div className="rounded-xl border border-border bg-card p-4 space-y-3">
-        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
-          <div className="flex items-center gap-1.5">
-            <History className="h-4 w-4 text-primary" />
-            <span>Recent JSON Runs ({history?.length || 0})</span>
-          </div>
-          {history && history.length > 0 && (
-            <span className="text-[11px] font-normal">Saved to IndexedDB</span>
-          )}
-        </div>
-        {history && history.length > 0 ? (
-          <div className="space-y-1.5 max-h-32 overflow-y-auto">
-            {history.slice(0, 3).map((item) => (
-              <div
-                key={item.id}
-                onClick={() => {
-                  setInput(item.input);
-                  try {
-                    setOutput(JSON.stringify(JSON.parse(item.input), null, 2));
-                    setError(null);
-                  } catch {
-                    setOutput("");
-                  }
-                }}
-                className="cursor-pointer p-2 rounded-lg border border-border/50 bg-muted/30 hover:bg-muted/70 text-xs font-mono flex justify-between items-center transition-colors"
-              >
-                <span className="truncate max-w-lg text-foreground">{item.input}</span>
-                <div className="flex items-center gap-2 shrink-0">
-                  <CopyButton text={item.input} showIconOnly className="h-6 w-6 p-0 border-0 bg-transparent hover:bg-muted" />
-                  <span className="text-[10px] text-muted-foreground">
-                    {new Date(item.createdAt).toLocaleTimeString()}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground italic">No past runs recorded yet.</p>
-        )}
       </div>
     </div>
   );
