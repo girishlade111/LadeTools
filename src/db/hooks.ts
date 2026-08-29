@@ -175,6 +175,18 @@ export async function addRegexHistory(
   return id;
 }
 
+/**
+ * Trim UUID history table by type so each type never exceeds limit (20 records each)
+ */
+async function trimUuidHistoryByType(type: "uuid" | "timestamp", limit = HISTORY_LIMIT): Promise<void> {
+  const items = await db.uuidHistory.where("type").equals(type).sortBy("createdAt");
+  if (items.length > limit) {
+    const excess = items.length - limit;
+    const oldestIds = items.slice(0, excess).map((it) => it.id!).filter(Boolean);
+    await db.uuidHistory.bulkDelete(oldestIds);
+  }
+}
+
 export async function addUuidHistory(
   value: string,
   type: "uuid" | "timestamp"
@@ -182,10 +194,17 @@ export async function addUuidHistory(
   const trimmed = value.trim();
   if (!trimmed) return 0;
 
-  // Deduplicate consecutive identical entries
-  const latest = await db.uuidHistory.orderBy("createdAt").last();
-  if (latest && latest.value.trim() === trimmed && latest.type === type) {
-    return latest.id || 0;
+  // Deduplicate ONLY for timestamp type (UUIDs are always unique)
+  if (type === "timestamp") {
+    const latestTimestamps = await db.uuidHistory
+      .where("type")
+      .equals("timestamp")
+      .reverse()
+      .sortBy("createdAt");
+
+    if (latestTimestamps.length > 0 && latestTimestamps[0].value === trimmed) {
+      return latestTimestamps[0].id || 0;
+    }
   }
 
   const id = await db.uuidHistory.add({
@@ -194,7 +213,7 @@ export async function addUuidHistory(
     createdAt: new Date(),
   });
 
-  await trimHistoryTable("uuidHistory", HISTORY_LIMIT);
+  await trimUuidHistoryByType(type, HISTORY_LIMIT);
   return id;
 }
 
