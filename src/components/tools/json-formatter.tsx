@@ -230,6 +230,16 @@ export function JsonFormatterTool() {
         </div>
       </div>
 
+      {/* Large Payload Warning */}
+      {input.length > 500_000 && (
+        <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/25 text-xs text-amber-300 font-medium">
+          <AlertCircle className="h-4 w-4 text-amber-400 shrink-0" />
+          <span>
+            Large payload ({(input.length / 1024).toFixed(0)} KB). Code View is recommended over Tree View for optimal rendering speed.
+          </span>
+        </div>
+      )}
+
       {/* Split-Pane Grid Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Left Pane: Input Editor */}

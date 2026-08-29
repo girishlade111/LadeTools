@@ -8,6 +8,7 @@ import { TOOLS_REGISTRY, type ToolId } from "@/components/tools";
 
 import { SupportFooter } from "@/components/support-footer";
 import { HomePage } from "@/components/pages/home-page";
+import { ToolErrorBoundary } from "@/components/ui/tool-error-boundary";
 
 interface AppLayoutProps {
   activeToolId: ToolId;
@@ -51,7 +52,15 @@ export function AppLayout({ activeToolId, onSelectTool, dbStatus }: AppLayoutPro
           {isHome ? (
             <HomePage onSelectTool={onSelectTool} />
           ) : (
-            ActiveComponent && <ActiveComponent />
+            ActiveComponent && (
+              <ToolErrorBoundary
+                key={activeToolId}
+                toolName={activeTool?.name}
+                onReset={() => onSelectTool(activeToolId)}
+              >
+                <ActiveComponent />
+              </ToolErrorBoundary>
+            )
           )}
           <SupportFooter />
         </main>

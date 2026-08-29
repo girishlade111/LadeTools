@@ -361,6 +361,16 @@ export function Base64Tool() {
         </div>
       )}
 
+      {/* Large Payload Warning */}
+      {input.length > 500_000 && (
+        <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/25 text-xs text-amber-300 font-medium">
+          <AlertCircle className="h-4 w-4 text-amber-400 shrink-0" />
+          <span>
+            Large payload ({(input.length / 1024).toFixed(0)} KB). Base64 conversions are computed efficiently in-memory.
+          </span>
+        </div>
+      )}
+
       {/* Editor Panes */}
       <div className="space-y-4">
         {/* Input Area */}
