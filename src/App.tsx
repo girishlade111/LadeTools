@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/hooks/use-theme";
 import { TOOLS_REGISTRY } from "@/components/tools";
+import { PwaInstallPrompt, PwaStatusBadge } from "@/components/pwa-install-prompt";
 import {
   Wrench,
   Database,
@@ -17,6 +18,7 @@ import {
   ArrowRight,
   PlusCircle,
   Trash2,
+  HardDriveDownload,
 } from "lucide-react";
 
 export function App() {
@@ -50,7 +52,7 @@ export function App() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-primary/20 selection:text-primary">
       {/* Navigation Bar */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="container max-w-6xl mx-auto flex h-16 items-center justify-between px-4 sm:px-8">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-blue-600 text-primary-foreground shadow-md shadow-primary/20">
@@ -66,7 +68,9 @@ export function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <PwaStatusBadge />
+
             <Button
               variant="ghost"
               size="icon"
@@ -80,15 +84,6 @@ export function App() {
                 <Moon className="h-5 w-5 text-slate-700 transition-transform rotate-0 scale-100" />
               )}
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden sm:inline-flex gap-1.5"
-              onClick={() => window.open("https://github.com", "_blank")}
-            >
-              <Zap className="h-4 w-4 text-amber-500" />
-              Offline Ready
-            </Button>
           </div>
         </div>
       </header>
@@ -99,7 +94,7 @@ export function App() {
         <section className="text-center space-y-4 pt-4 pb-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-xs font-medium mb-2 backdrop-blur">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Client-Side Only • Local Storage • Privacy-First</span>
+            <span>Client-Side Only • Local Storage • Offline PWA</span>
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight">
@@ -126,7 +121,7 @@ export function App() {
                 <h2 className="font-semibold text-lg">Setup & UI Verification</h2>
               </div>
               <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-medium">
-                Active
+                PWA Enabled
               </span>
             </div>
 
@@ -177,16 +172,16 @@ export function App() {
                 <span className="text-foreground font-semibold">18.3.1</span>
               </div>
               <div className="flex justify-between text-muted-foreground">
+                <span>PWA Service Worker:</span>
+                <span className="text-emerald-400 font-semibold">Cache-First App Shell</span>
+              </div>
+              <div className="flex justify-between text-muted-foreground">
                 <span>TypeScript:</span>
                 <span className="text-foreground font-semibold">Strict Mode Enabled</span>
               </div>
               <div className="flex justify-between text-muted-foreground">
                 <span>Tailwind CSS:</span>
                 <span className="text-foreground font-semibold">Dark / Light HSL Tokens</span>
-              </div>
-              <div className="flex justify-between text-muted-foreground">
-                <span>shadcn/ui:</span>
-                <span className="text-foreground font-semibold">Configured (components.json)</span>
               </div>
             </div>
           </div>
@@ -302,11 +297,18 @@ export function App() {
         </section>
       </main>
 
+      {/* PWA Floating Install Banner */}
+      <PwaInstallPrompt />
+
       {/* Footer */}
       <footer className="border-t border-border/40 py-6 text-center text-xs text-muted-foreground">
-        <p>
-          LadeTools &bull; Offline-First Client-Side Developer Utilities &bull; Local IndexedDB Storage
-        </p>
+        <div className="container max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 px-4">
+          <p>LadeTools &bull; Offline-First Client-Side Developer Utilities</p>
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <HardDriveDownload className="h-3.5 w-3.5 text-primary" />
+            <span>Installable Web App</span>
+          </div>
+        </div>
       </footer>
     </div>
   );
