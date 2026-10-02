@@ -106,3 +106,7 @@ LadeTools is architected on a zero-backend model. No network requests are made w
 ## 📄 License
 
 MIT License &copy; 2026 Girish Lade. Free and open source for everyone.
+
+---
+
+**Built by [Girish Lade](https://github.com/girishlade111)** — part of the [LadeStack](https://ladestack.in) family of free, open-source tools.
